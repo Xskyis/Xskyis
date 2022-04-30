@@ -1,6 +1,6 @@
 ![MasterHead](https://upload.wikimedia.org/wikipedia/commons/2/20/Matrix_Digital_rain_banner.gif)
 <h1 align="center">Hi Everyone👋, I'm Achmad Nabil Afgareza</h1>
-<h3 align="center">I'm 16 years old, and I'm a 10th grader at SMK Telkom Malang</h3>
+<h3 align="center">now i'm 16 years old, and I'm a 10th grader at SMK Telkom Malang</h3>
 <img align="right" alt="Coding" width="400" src="https://media1.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif?cid=ecf05e474cr0ma9g6ikmlrbgwxluxyg0xwksb04teex42n80&rid=giphy.gif&ct=g">
 
 
