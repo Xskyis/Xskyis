@@ -1,23 +1,31 @@
-![MasterHead](https://upload.wikimedia.org/wikipedia/commons/2/20/Matrix_Digital_rain_banner.gif)
-<h1 align="center">Hi Everyone👋, I'm Achmad Nabil Afgareza</h1>
-<h3 align="center">now i'm 16 years old, and I'm a 10th grader at SMK Telkom Malang</h3>
-<img align="right" alt="Coding" width="400" src="https://media1.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif?cid=ecf05e474cr0ma9g6ikmlrbgwxluxyg0xwksb04teex42n80&rid=giphy.gif&ct=g">
+### Hi Everyone 👋
+
+**👦My name is Achmad Nabil Afgareza** Im student at `Malang Telkom Vocation School` at `Software Enginering Major`,I am now in the 11
+th grade.I like to programming with `JavaScript` languange because its fun to experiment with the languange. Im also learning `python` and `HTML`
+</br>
+
+# My statistic in GitHub
+
+![Lampu geser](https://user-images.githubusercontent.com/88439222/164865523-76e64f6a-277c-4020-9661-4804e4392323.gif)
+
+![](https://github-readme-stats.vercel.app/api?username=fahrimaulanaa&show_icons=true&theme=github_dark)
+![](https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=fahrimaulanaa&theme=github_dark)
+
+![Lampu geser](https://user-images.githubusercontent.com/88439222/164865523-76e64f6a-277c-4020-9661-4804e4392323.gif)
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=fahrimaulanaa&theme=tokyonight_duo" alt="mystreak"/>
+![](https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=fahrimaulanaa&theme=github_dark)
+
+![Lampu geser](https://user-images.githubusercontent.com/88439222/164865523-76e64f6a-277c-4020-9661-4804e4392323.gif)
+
+[![](https://activity-graph.herokuapp.com/graph?username=fahrimaulanaa&theme=react-dark)](AkuraDiary)
+
+![Lampu geser](https://user-images.githubusercontent.com/88439222/164865715-a1ad8c93-86a1-47a6-a075-4e4ce656dbe0.gif)
 
 
-<p align="left"> <img src="https://komarev.com/ghpvc/?username=xskyis&label=Profile%20views&color=0e75b6&style=flat" alt="xskyis" /> </p>
+# Reach me here!
 
-- 🌱 I’m currently learning **Java,Python,HTML,3Dmodelling**
-
-- 📫 How to reach me **nabilafgarezaafgarza@gmail.com**
-
-- ⚡ Fun fact **I Think I'm a Shy Person & I'm still just learning to coding**
-
-<h3 align="left">Connect with me:</h3>
-<p align="left">
-<a href="https://instagram.com/nabilfgrza_" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg" alt="nabilfgrza_" height="30" width="40" /></a>
-<a href="https://www.youtube.com/c/nabil hd" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/youtube.svg" alt="nabil hd" height="30" width="40" /></a>
-<a href="https://discord.gg/Nblfgrza#1530" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/discord.svg" alt="Nblfgrza#1530" height="30" width="40" /></a>
-</p>
-
-<h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://www.blender.org/" target="_blank" rel="noreferrer"> <img src="https://download.blender.org/branding/community/blender_community_badge_white.svg" alt="blender" width="40" height="40"/> </a> <a href="https://www.java.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" alt="java" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> </a> <a href="https://unity.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/unity3d/unity3d-icon.svg" alt="unity" width="40" height="40"/> </a> </p>
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/katanyasihfahri)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/fahri-maulana-51030221a/)
+[![gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:fahri_ghazali_30rpl@student.smktelkom-mlg.sch.id)
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/JanjiJiwa_kopi)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://api.whatsapp.com/send?phone=6282141137980)
