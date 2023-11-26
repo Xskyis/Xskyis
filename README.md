@@ -64,13 +64,12 @@
 </div>
 
 <br/><br/>
-
 <hr/>
 
-<br/>
-
-<h1 align="center">
-    <img src="https://readme-typing-svg.herokuapp.com/?font=Righteous&size=35&center=true&vCenter=true&width=500&height=70&duration=4000&lines=Thanks For Visit Me!;+Have a good day!!!;" />
-</h1>
+<h3 align="center">
+    <a href="https://git.io/typing-svg"
+    <img src="https://readme-typing-svg.herokuapp.com/?font=Righteous&size=35&center=true&vCenter=true&width=500&height=70&duration=4000&lines=Thanks+For+Visiting!;+Bye..+Bye..;" />
+    </a>
+</h3>
 
 <br/>
