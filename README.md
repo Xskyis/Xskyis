@@ -14,9 +14,9 @@
  
  🌱 I’m currently learning **TypeScript, ReactJs, and FrontEnd Development**
 
-💬 Ask me about **Nothing :)**
+💬 Ask me about **React and his friend Next**
 
-⚡ Fun fact **I'm an Introvert Guy**
+⚡ Fun fact **I dont really know :V**
 
  </div>
  
