@@ -12,7 +12,7 @@
  
  🔭 I’m currently working on **a web app**
  
- 🌱 I’m currently learning **TypeScript, ReactJs, and FrontEnd Development**
+ 🌱 I’m currently learning **PHP & Laravel**
 
 💬 Ask me about **React and his friend Next**
 
