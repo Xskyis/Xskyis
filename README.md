@@ -14,9 +14,9 @@
  
  🌱 I’m currently learning **PHP & Laravel**
 
-💬 Ask me about **React and his friend Next**
+💬 Ask me about **FrontEnd Development**
 
-⚡ Fun fact **I dont really know :V**
+⚡ Fun fact **Brendan eich adalah bapak javascript**
 
  </div>
  
