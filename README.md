@@ -10,13 +10,9 @@
 
 <div align="center">
  
- 🔭 I’m currently working on **a web app**
+ 🔭 I’m currently working on **Coolyeah**
  
- 🌱 I’m currently learning **PHP & Laravel**
-
-💬 Ask me about **FrontEnd Development**
-
-⚡ Fun fact **Brendan eich adalah bapak javascript**
+ 🌱 I’m currently learning <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" /> & Object Oriented Programming
 
  </div>
  
