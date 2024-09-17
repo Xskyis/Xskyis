@@ -28,8 +28,7 @@
   </a>
 </div>
 
- <hr/>
- 
+
 <h2 align="center">⚒️ Languages-Frameworks-Tools I've Been Used ⚒️</h2>
 <br/>
 <div align="center">
@@ -38,7 +37,6 @@
 </div>
 
 <br/>
-<hr/>
 
 <h2 align="center">⚡ Stats ⚡</h2>
 <br>
