@@ -12,7 +12,7 @@
  
  🔭 I’m currently working on **Coolyeah**
  
- 🌱 I’m currently learning <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" /> & Object Oriented Programming
+ 🌱 I’m currently learning **Java & OOP**
 
  </div>
  
