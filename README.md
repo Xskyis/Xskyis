@@ -12,7 +12,7 @@
  
  🔭 I’m currently working on **Coolyeah**
  
- 🌱 I’m currently learning **Java & OOP**
+ 🌱 I’m currently learning **Java, Dart, Flutter,& OOP**
 
  </div>
  
