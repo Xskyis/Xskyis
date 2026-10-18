@@ -87,22 +87,22 @@ def main():
     # 1. BIOS Boot Screen
     t.gen_text("", 1, count=5)
     t.toggle_show_cursor(False)
-    t.gen_text("GIF_OS Modular BIOS v1.0.11", 1)
+    t.gen_text("THUNDRA_OS Modular BIOS v1.0.11", 1)
     t.gen_text(f"Copyright (C) {year_now}, \x1b[31mXskyis Softwares Inc.\x1b[0m", 2)
     t.gen_text("\x1b[94mGitHub Profile ReadMe Terminal, Rev 1011\x1b[0m", 4)
-    t.gen_text("Krypton(tm) GIFCPU - 250Hz", 5)
+    t.gen_text("Thundr(tm) TrCPU - 5.6GHz", 5)
     
     # Fast memory test
     for i in range(0, 65653, 16384):
         t.delete_row(7)
         t.gen_text(f"Memory Test: {i}KB", 7, count=1, contin=True)
     t.delete_row(7)
-    t.gen_text("Memory Test: 64KB OK", 7, count=6, contin=True)
+    t.gen_text("Memory Test: 1208394KB OK", 7, count=6, contin=True)
 
     # 2. Login Phase
     t.clear_frame()
     t.toggle_show_cursor(False)
-    t.gen_text("\x1b[93mGIF OS v1.0.11 (tty1)\x1b[0m", 1, count=3)
+    t.gen_text("\x1b[93mTHUNDRA_OS v1.0.11 (tty1)\x1b[0m", 1, count=3)
     t.gen_text("login: ", 3, count=2)
     t.toggle_show_cursor(True)
     t.gen_typing_text("nabilfgrza", 3, contin=True)
@@ -168,8 +168,8 @@ def main():
     t.toggle_show_cursor(True)
     t.gen_typing_text("\x1b[92m# Thanks for visiting! :D\x1b[0m", footer_row, contin=True)
     
-    # Hold the final screen for 45 frames (~3 seconds)
-    t.clone_frame(45)
+    # Hold the final screen for 45 frames (~20 seconds)
+    t.clone_frame(1200)
 
     # 6. Generate GIF
     try:
@@ -187,9 +187,6 @@ def main():
     <source media="(prefers-color-scheme: light)" srcset="./output.gif">
     <img alt="GIFOS" src="output.gif" width="750">
 </picture>
-
-<br />
-<sub><i>Generated automatically using <a href="https://github.com/x0rzavi/github-readme-terminal">x0rzavi/github-readme-terminal</a></i></sub>
 </div>
 """
     with open("README.md", "w", encoding="utf-8") as f:
