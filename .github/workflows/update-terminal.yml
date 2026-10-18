@@ -1,22 +1,22 @@
-name: ⚡ Update Retro Terminal GIF
+name: ⚡ Update GIFOS Terminal Readme
 
 on:
   schedule:
     # Run everyday at 00:00 UTC
     - cron: '0 0 * * *'
-  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
-      - 'scripts/**'
+      - 'main.py'
       - '.github/workflows/update-terminal.yml'
 
 permissions:
   contents: write
 
 jobs:
-  render:
+  update-readme:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,22 +29,26 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: 📦 Install dependencies
+      - name: 📦 Install FFmpeg and Dependencies
         run: |
+          sudo apt update && sudo apt install -y ffmpeg
           python -m pip install --upgrade pip
+          pip install git+https://github.com/x0rzavi/github-readme-terminal.git@main
           pip install -r requirements.txt
 
-      - name: 🎨 Render Animated Retro GIF & Preview
+      - name: 🎨 Run GIFOS Generation Script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIFOS_GENERAL_FPS: 15
+          GIFOS_GENERAL_COLOR_SCHEME: "yoru"
         run: |
-          python scripts/generate_terminal.py
+          python main.py
 
-      - name: 🚀 Commit and Push Updated Terminal Assets
+      - name: 🚀 Commit and Push Updated Readme & GIF
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore(assets): auto-refresh retro terminal gif [skip ci]"
-          file_pattern: 'assets/terminal.gif assets/terminal_preview.png'
+          commit_message: "chore(gifos): auto-refresh terminal readme [skip ci]"
+          file_pattern: 'README.md output.gif'
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
