@@ -1,6 +1,7 @@
 import os
 import glob
 import re
+import shutil
 from datetime import datetime
 from PIL import Image
 
@@ -42,6 +43,10 @@ def fallback_gen_gif(fps=15, output_name="output.gif"):
     print(f"INFO: Generated {output_name} via Pillow! Size: {os.path.getsize(output_name)} bytes")
 
 def main():
+    # Clean previous frames so no stale frames linger
+    shutil.rmtree("frames", ignore_errors=True)
+    os.makedirs("frames", exist_ok=True)
+
     print("INFO: Initializing gifos terminal...")
     t = gifos.Terminal(
         width=750,
@@ -51,6 +56,7 @@ def main():
         font_file=FONT_FILE_BITMAP,
         font_size=15,
     )
+    t.set_prompt(f"\x1b[0;91m{gifos_settings['general']['user_name']}\x1b[0m@\x1b[0;93mthundra-os ~> \x1b[0m")
 
     year_now = datetime.now().strftime("%Y")
 
@@ -185,7 +191,7 @@ def main():
 <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./output.gif">
     <source media="(prefers-color-scheme: light)" srcset="./output.gif">
-    <img alt="GIFOS" src="output.gif" width="750">
+    <img alt="THUNDRA_OS" src="output.gif" width="750">
 </picture>
 </div>
 """
