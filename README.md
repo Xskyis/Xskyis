@@ -6,8 +6,6 @@
     <img alt="THUNDRA_OS" src="output.gif" width="750">
   </picture>
 
-  <br /><br />
-
   <!-- Contribution Highlight Terminal Card -->
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./assets/contributions.svg">
