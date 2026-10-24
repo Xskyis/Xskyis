@@ -6,14 +6,26 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# GitAscii / Dracula-Yoru Contribution Heatmap Palette
-PALETTE = [
-    "#161b22",  # 0 contributions (Dark slate outline)
-    "#1f2937",  # Level 1 (Subtle dark blue/gray)
-    "#3b82f6",  # Level 2 (Vibrant blue)
-    "#60a5fa",  # Level 3 (Medium light blue)
-    "#93c5fd",  # Level 4 (Soft light blue)
-    "#c084fc",  # Level 5 (Purple / lavender highlight)
+# Yoru / THUNDRA_OS Terminal Palette (Aligned with gifos yoru theme)
+YORU_BG = "#0c0e0f"       # Pure dark terminal background
+YORU_BAR = "#141719"      # Window header bar
+YORU_BORDER = "#232628"   # Subtle terminal border
+YORU_DIVIDER = "#1e2123"  # Divider line
+YORU_FG = "#edeff0"       # White text
+YORU_MUTED = "#7a8288"    # Muted gray text
+YORU_CYAN = "#70b8ca"     # Cyan labels
+YORU_GREEN = "#81c19b"    # Emerald green numbers & accents
+YORU_YELLOW = "#de8f78"   # Peach / yellow numbers & prompt
+YORU_RED = "#df5b61"      # Red prompt username
+
+# Yoru-themed heatmap levels (seamless dark forest to emerald green)
+YORU_HEATMAP = [
+    "#202325",  # 0 contributions (Subtle visible dark slate cell)
+    "#1e3e2e",  # Level 1 (1-2)
+    "#2d6347",  # Level 2 (3-5)
+    "#448e65",  # Level 3 (6-8)
+    "#78b892",  # Level 4 (9-11)
+    "#81c19b",  # Level 5 (12+)
 ]
 
 def fetch_contribution_data(username="Xskyis", token=None):
@@ -47,7 +59,7 @@ def fetch_contribution_data(username="Xskyis", token=None):
         req = urllib.request.Request(
             "https://api.github.com/graphql",
             data=json.dumps({"query": query, "variables": {"login": username}}).encode("utf-8"),
-            headers={"Authorization": f"Bearer {token.strip()}", "User-Agent": "GitAscii-Heatmap-Generator"}
+            headers={"Authorization": f"Bearer {token.strip()}", "User-Agent": "THUNDRA-Heatmap-Generator"}
         )
         res = json.loads(urllib.request.urlopen(req, timeout=15).read().decode("utf-8"))
         if "data" in res and res["data"] and "user" in res["data"] and res["data"]["user"]:
@@ -63,12 +75,11 @@ def fetch_contribution_data(username="Xskyis", token=None):
 def compute_stats(cal):
     """Compute contribution totals, streaks, best day, and date ranges."""
     if not cal or not cal.get("weeks"):
-        # Realistic fallback values based on Xskyis profile
         return {
-            "total_contributions": 164,
+            "total_contributions": 166,
             "weeks": [],
             "days": [],
-            "current_streak": 0,
+            "current_streak": 1,
             "longest_streak": 4,
             "best_day_count": 13,
             "best_day_date": "Jun 22, 2026",
@@ -96,7 +107,6 @@ def compute_stats(cal):
     curr_streak = 0
     rev_days = list(reversed(days))
     idx = 0
-    # If today has 0 contributions, streak is evaluated starting from yesterday
     if rev_days and rev_days[0]["contributionCount"] == 0:
         idx = 1
     while idx < len(rev_days) and rev_days[idx]["contributionCount"] > 0:
@@ -129,32 +139,32 @@ def compute_stats(cal):
 
 def get_fill_color(count, max_count):
     if count == 0:
-        return PALETTE[0]
+        return YORU_HEATMAP[0]
     if max_count <= 0:
-        return PALETTE[1]
+        return YORU_HEATMAP[1]
     ratio = count / max_count
     if ratio <= 0.18:
-        return PALETTE[1]
+        return YORU_HEATMAP[1]
     elif ratio <= 0.38:
-        return PALETTE[2]
+        return YORU_HEATMAP[2]
     elif ratio <= 0.60:
-        return PALETTE[3]
+        return YORU_HEATMAP[3]
     elif ratio <= 0.82:
-        return PALETTE[4]
+        return YORU_HEATMAP[4]
     else:
-        return PALETTE[5]
+        return YORU_HEATMAP[5]
 
 def generate_svg_content(username, stats):
-    """Generate SVG markup for the Contribution Highlight terminal window widget."""
+    """Generate SVG markup for the Contribution Highlight terminal window widget in Yoru theme."""
     weeks = stats.get("weeks", [])
     max_count = stats.get("best_day_count", 1)
 
-    width = 704
+    width = 750
     height = 240
-    start_x = 52.0
-    start_y = 50.0
-    cell_size = 9.545454545454545
-    step = 11.93181818181818
+    start_x = 76.0
+    start_y = 52.0
+    cell_size = 9.8
+    step = 12.0
     rx = 2.5
 
     # Month labels calculation - skip very short initial partial month so it matches reference
@@ -176,7 +186,6 @@ def generate_svg_content(username, stats):
                     month_len += 1
                 else:
                     break
-            # Skip if it is at the very beginning with < 3 weeks duration
             if col_idx == 0 and month_len < 3:
                 continue
             if (col_idx - last_label_col) >= 3:
@@ -194,12 +203,12 @@ def generate_svg_content(username, stats):
             count = day["contributionCount"]
             date_str = day["date"]
             fill = get_fill_color(count, max_count)
-            delay = f"{col_idx * 0.018 + weekday * 0.045:.3f}s"
+            delay = f"{col_idx * 0.016 + weekday * 0.04:.3f}s"
             plural = "contribution" if count == 1 else "contributions"
             rect = f'<rect class="c-cell" style="animation-delay:{delay}" x="{c_x:.2f}" y="{c_y:.2f}" width="{cell_size:.2f}" height="{cell_size:.2f}" rx="{rx}" fill="{fill}"><title>{date_str}: {count} {plural}</title></rect>'
             cells_xml.append(rect)
 
-    month_xml = "\n".join([f'<text x="{x:.2f}" y="44" fill="#7d8590" font-size="10">{m}</text>' for x, m in month_labels])
+    month_xml = "\n".join([f'<text x="{x:.2f}" y="45" fill="{YORU_CYAN}" font-size="10" font-weight="600">{m}</text>' for x, m in month_labels])
     all_cells_str = "\n".join(cells_xml)
 
     total_c = stats["total_contributions"]
@@ -210,47 +219,66 @@ def generate_svg_content(username, stats):
     best_count = stats["best_day_count"]
     best_date = stats["best_day_date"]
 
-    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
 <style>
-@keyframes cell-anim {{ 0% {{ opacity: 0; transform: translateY(-6px); }} 100% {{ opacity: 1; transform: translateY(0); }} }}
-.c-cell {{ opacity: 0; animation: cell-anim 0.42s cubic-bezier(.2,.8,.2,1) both; }}
+@keyframes cell-anim {{ 0% {{ opacity: 0.3; transform: translateY(-4px); }} 100% {{ opacity: 1; transform: translateY(0); }} }}
+.c-cell {{ opacity: 1; animation: cell-anim 0.38s cubic-bezier(.2,.8,.2,1) both; }}
 </style>
-<defs>
-<linearGradient id="heatmap-bg" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0" stop-color="#0d1420"/>
-  <stop offset="1" stop-color="#0d1117"/>
-</linearGradient>
-</defs>
-<rect width="{width}" height="{height}" rx="12" fill="url(#heatmap-bg)"/>
-<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="12" fill="none" stroke="#30363d" stroke-width="1" stroke-opacity="0.55"/>
-<line x1="0" y1="30" x2="{width}" y2="30" stroke="#30363d" stroke-opacity="0.35"/>
-<circle cx="22" cy="15" r="5" fill="#ff5f56"/>
-<circle cx="38" cy="15" r="5" fill="#ffbd2e"/>
-<circle cx="54" cy="15" r="5" fill="#27c93f"/>
-<text x="{width / 2:.0f}" y="19" fill="#7d8590" font-size="12" text-anchor="middle">{username}@github: ~/contributions --graph</text>
+
+<!-- Terminal Window Background (Yoru Theme #0c0e0f) -->
+<rect width="{width}" height="{height}" rx="10" fill="{YORU_BG}"/>
+<rect x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="10" fill="none" stroke="{YORU_BORDER}" stroke-width="1"/>
+
+<!-- Header Bar -->
+<path d="M 0.5 10.5 A 10 10 0 0 1 10.5 0.5 L {width - 10.5} 0.5 A 10 10 0 0 1 {width - 0.5} 10.5 L {width - 0.5} 32 L 0.5 32 Z" fill="{YORU_BAR}"/>
+<line x1="0" y1="32" x2="{width}" y2="32" stroke="{YORU_BORDER}" stroke-width="1"/>
+
+<!-- Window Controls (Yoru Red, Yellow, Green) -->
+<circle cx="22" cy="16" r="5" fill="{YORU_RED}"/>
+<circle cx="38" cy="16" r="5" fill="{YORU_YELLOW}"/>
+<circle cx="54" cy="16" r="5" fill="{YORU_GREEN}"/>
+
+<!-- Terminal Title Prompt matching THUNDRA_OS -->
+<text x="{width / 2:.0f}" y="20" font-size="12" font-weight="600" text-anchor="middle">
+  <tspan fill="{YORU_RED}">nabilfgrza</tspan><tspan fill="{YORU_MUTED}">@</tspan><tspan fill="{YORU_YELLOW}">thundra-os</tspan><tspan fill="{YORU_CYAN}">: </tspan><tspan fill="{YORU_GREEN}">~/contributions</tspan><tspan fill="{YORU_FG}"> --graph</tspan>
+</text>
+
+<!-- Month Labels -->
 {month_xml}
-<text x="22" y="69.4" fill="#7d8590" font-size="9">Mon</text>
-<text x="22" y="93.2" fill="#7d8590" font-size="9">Wed</text>
-<text x="22" y="117.1" fill="#7d8590" font-size="9">Fri</text>
+
+<!-- Weekday Labels -->
+<text x="32" y="70" fill="{YORU_MUTED}" font-size="9" font-weight="600">Mon</text>
+<text x="32" y="94" fill="{YORU_MUTED}" font-size="9" font-weight="600">Wed</text>
+<text x="32" y="118" fill="{YORU_MUTED}" font-size="9" font-weight="600">Fri</text>
+
+<!-- Contribution Cells -->
 {all_cells_str}
-<text x="572.8" y="147.2" fill="#7d8590" font-size="10" text-anchor="end">Less</text>
-<rect x="578.8" y="139.5" width="9.5" height="9.5" rx="2.2" fill="{PALETTE[0]}"/>
-<rect x="590.7" y="139.5" width="9.5" height="9.5" rx="2.2" fill="{PALETTE[1]}"/>
-<rect x="602.7" y="139.5" width="9.5" height="9.5" rx="2.2" fill="{PALETTE[2]}"/>
-<rect x="614.6" y="139.5" width="9.5" height="9.5" rx="2.2" fill="{PALETTE[3]}"/>
-<rect x="626.5" y="139.5" width="9.5" height="9.5" rx="2.2" fill="{PALETTE[4]}"/>
-<rect x="638.5" y="139.5" width="9.5" height="9.5" rx="2.2" fill="{PALETTE[5]}"/>
-<text x="682" y="147.2" fill="#7d8590" font-size="10" text-anchor="end">More</text>
-<line x1="0" y1="163" x2="{width}" y2="163" stroke="#30363d" stroke-opacity="0.25"/>
-<text x="22" y="187.1" font-size="13" fill="#39d353"><tspan font-weight="700">{total_c}</tspan><tspan fill="#7d8590"> contributions in the last year</tspan></text>
-<text x="682" y="187.1" font-size="12" fill="#7d8590" text-anchor="end">{start_date} &#8594; {end_date}</text>
-<text x="22" y="211.1" font-size="13" fill="#7d8590">current streak <tspan fill="#ffa657" font-weight="700">{curr_streak} days</tspan><tspan fill="#7d8590">   &#183;   longest </tspan><tspan fill="#ffa657" font-weight="700">{longest_streak} days</tspan></text>
-<text x="682" y="211.1" font-size="12" fill="#7d8590" text-anchor="end">best day <tspan fill="#f2cc60" font-weight="700">{best_count}</tspan> on {best_date}</text>
+
+<!-- Legend -->
+<text x="618" y="149" fill="{YORU_MUTED}" font-size="10" text-anchor="end">Less</text>
+<rect x="624" y="141" width="9.5" height="9.5" rx="2.2" fill="{YORU_HEATMAP[0]}"/>
+<rect x="636" y="141" width="9.5" height="9.5" rx="2.2" fill="{YORU_HEATMAP[1]}"/>
+<rect x="648" y="141" width="9.5" height="9.5" rx="2.2" fill="{YORU_HEATMAP[2]}"/>
+<rect x="660" y="141" width="9.5" height="9.5" rx="2.2" fill="{YORU_HEATMAP[3]}"/>
+<rect x="672" y="141" width="9.5" height="9.5" rx="2.2" fill="{YORU_HEATMAP[4]}"/>
+<rect x="684" y="141" width="9.5" height="9.5" rx="2.2" fill="{YORU_HEATMAP[5]}"/>
+<text x="726" y="149" fill="{YORU_MUTED}" font-size="10" text-anchor="end">More</text>
+
+<!-- Divider Line -->
+<line x1="16" y1="165" x2="{width - 16}" y2="165" stroke="{YORU_DIVIDER}" stroke-width="1"/>
+
+<!-- Summary Bottom Row 1 -->
+<text x="24" y="189" font-size="13"><tspan fill="{YORU_GREEN}" font-weight="700">{total_c}</tspan><tspan fill="{YORU_MUTED}"> contributions in the last year</tspan></text>
+<text x="{width - 24}" y="189" font-size="12" fill="{YORU_CYAN}" text-anchor="end">{start_date} &#8594; {end_date}</text>
+
+<!-- Summary Bottom Row 2 -->
+<text x="24" y="213" font-size="13" fill="{YORU_MUTED}">current streak <tspan fill="{YORU_YELLOW}" font-weight="700">{curr_streak} days</tspan><tspan fill="{YORU_MUTED}">   &#183;   longest </tspan><tspan fill="{YORU_YELLOW}" font-weight="700">{longest_streak} days</tspan></text>
+<text x="{width - 24}" y="213" font-size="12" fill="{YORU_MUTED}" text-anchor="end">best day <tspan fill="{YORU_YELLOW}" font-weight="700">{best_count}</tspan> on {best_date}</text>
 </svg>"""
     return svg
 
 def generate_and_save_svg(username="Xskyis", token=None, output_path="assets/contributions.svg"):
-    """Fetch data, compute stats, and save the SVG card."""
+    """Fetch data, compute stats, and save the SVG card in Yoru theme."""
     print(f"INFO: Fetching contribution calendar for {username}...")
     cal = fetch_contribution_data(username=username, token=token)
     stats = compute_stats(cal)
@@ -259,7 +287,7 @@ def generate_and_save_svg(username="Xskyis", token=None, output_path="assets/con
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(svg_content)
-    print(f"INFO: Successfully generated {output_path} ({os.path.getsize(output_path)} bytes)!")
+    print(f"INFO: Successfully generated {output_path} ({os.path.getsize(output_path)} bytes) in Yoru theme!")
     return stats
 
 if __name__ == "__main__":
