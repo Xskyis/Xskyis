@@ -11,6 +11,7 @@ load_dotenv()
 
 import gifos
 from gifos.utils.load_config import gifos_settings
+from scripts.generate_contribution_highlight import generate_and_save_svg
 
 # Configure gifos terminal settings
 gifos_settings["general"]["user_name"] = "nabilfgrza"
@@ -57,19 +58,33 @@ def main():
         font_size=15,
     )
     t.set_prompt(f"\x1b[0;91m{gifos_settings['general']['user_name']}\x1b[0m@\x1b[0;93mthundra-os ~> \x1b[0m")
-
     year_now = datetime.now().strftime("%Y")
 
-    # Fetch dynamic GitHub stats for Xskyis
+    # Fetch dynamic GitHub stats and contribution highlights for Xskyis
     github_username = "Xskyis"
-    rating = "A+"
-    stars = "0"
-    commits = "342"
-    prs = "7 (Merged: 100%)"
-    contribs = "1"
-    top_langs = "Jupyter, JS, CSS, HTML"
-
     token = os.getenv("GITHUB_TOKEN")
+    rating = "A+"
+
+    # 1. Fetch live contribution calendar and generate Contribution Highlight SVG card
+    try:
+        contrib_stats = generate_and_save_svg(
+            username=github_username,
+            token=token,
+            output_path="assets/contributions.svg",
+        )
+    except Exception as e:
+        print(f"WARNING: Could not generate contribution highlight: {e}")
+        contrib_stats = {
+            "total_contributions": 164,
+            "current_streak": 0,
+            "longest_streak": 4,
+            "best_day_count": 13,
+            "best_day_date": "Jun 22, 2026",
+            "start_date_short": "Oct 19, 2025",
+            "end_date_short": "Oct 24, 2026",
+        }
+
+    # 2. Fetch general GitHub stats for user ranking
     if token and token.strip() and not token.startswith("ghp_your"):
         try:
             print(f"INFO: Fetching live GitHub statistics for {github_username}...")
@@ -78,12 +93,6 @@ def main():
             stats = gifos.utils.fetch_github_stats(github_username, include_all_commits=True)
             if stats:
                 rating = stats.user_rank.level
-                stars = str(stats.total_stargazers)
-                commits = str(stats.total_commits_all_time or stats.total_commits_last_year)
-                prs = f"{stats.total_pull_requests_made} (Merged: {stats.pull_requests_merge_percentage:.0f}%)"
-                contribs = str(stats.total_repo_contributions)
-                if stats.languages_sorted:
-                    top_langs = ", ".join([l[0] for l in stats.languages_sorted[:4]])
                 print("INFO: Live GitHub stats fetched successfully!")
         except Exception as e:
             print(f"WARNING: Could not fetch live GitHub stats: {e}. Using fallback stats.")
@@ -133,6 +142,14 @@ def main():
     t.clear_frame()
     t.toggle_show_cursor(False)
 
+    total_c = contrib_stats.get("total_contributions", 164)
+    curr_strk = contrib_stats.get("current_streak", 0)
+    lng_strk = contrib_stats.get("longest_streak", 4)
+    best_c = contrib_stats.get("best_day_count", 13)
+    best_d = contrib_stats.get("best_day_date", "Jun 22, 2026")
+    start_d = contrib_stats.get("start_date_short", "Oct 19, 2025")
+    end_d = contrib_stats.get("end_date_short", "Oct 24, 2026")
+
     user_details_lines = f"""\x1b[30;101mnabilfgrza@GitHub\x1b[0m
 --------------
 \x1b[96mOS:     \x1b[93mCachyOS, Atlas OS\x1b[0m
@@ -147,14 +164,14 @@ def main():
 \x1b[96mLinkedIn: \x1b[93mnabilfgrza\x1b[0m
 \x1b[96mGitHub:   \x1b[93mXskyis\x1b[0m
 
-\x1b[30;101mGitHub Stats:\x1b[0m
---------------
-\x1b[96mUser Rating:         \x1b[92m{rating}\x1b[0m
-\x1b[96mTotal Stars Earned:  \x1b[93m{stars}\x1b[0m
-\x1b[96mTotal Commits:       \x1b[93m{commits}\x1b[0m
-\x1b[96mTotal PRs:           \x1b[93m{prs}\x1b[0m
-\x1b[96mTotal Contributions: \x1b[93m{contribs}\x1b[0m
-\x1b[96mTop Languages:       \x1b[93m{top_langs}\x1b[0m
+\x1b[30;101mContribution Highlight:\x1b[0m
+-----------------------
+\x1b[96mContributions:  \x1b[92m{total_c} in last year\x1b[0m
+\x1b[96mCurrent Streak: \x1b[93m{curr_strk} days\x1b[0m
+\x1b[96mLongest Streak: \x1b[93m{lng_strk} days\x1b[0m
+\x1b[96mBest Day:       \x1b[93m{best_c} on {best_d}\x1b[0m
+\x1b[96mTracked Range:  \x1b[93m{start_d} -> {end_d}\x1b[0m
+\x1b[96mUser Rank:      \x1b[92m{rating}\x1b[0m
 
 \x1b[40m   \x1b[41m   \x1b[42m   \x1b[43m   \x1b[44m   \x1b[45m   \x1b[46m   \x1b[47m   \x1b[0m"""
 
@@ -186,18 +203,28 @@ def main():
     if not os.path.exists("output.gif") or os.path.getsize("output.gif") == 0:
         fallback_gen_gif(fps=15, output_name="output.gif")
 
-    # 7. Write minimalist README.md (pure x0rzavi gifos style)
+    # 7. Write README.md with terminal GIF and Contribution Highlight card
     readme_content = f"""<div align="center">
-<picture>
+  <!-- THUNDRA_OS Terminal Animation -->
+  <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./output.gif">
     <source media="(prefers-color-scheme: light)" srcset="./output.gif">
     <img alt="THUNDRA_OS" src="output.gif" width="750">
-</picture>
+  </picture>
+
+  <br /><br />
+
+  <!-- Contribution Highlight Terminal Card -->
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./assets/contributions.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./assets/contributions.svg">
+    <img alt="Contribution Highlight" src="assets/contributions.svg" width="750">
+  </picture>
 </div>
 """
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
-    print("INFO: Updated README.md (clean gifos style)!")
+    print("INFO: Updated README.md (with THUNDRA_OS and Contribution Highlight card)!")
 
 if __name__ == "__main__":
     main()
