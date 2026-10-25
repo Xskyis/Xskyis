@@ -2,11 +2,12 @@ import os
 import urllib.request
 import json
 from datetime import datetime
+from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Yoru / THUNDRA_OS Terminal Palette (Aligned with gifos yoru theme)
+# Yoru / THUNDRA_OS Terminal Palette (Hex for SVG & RGB for Pillow)
 YORU_BG = "#0c0e0f"       # Pure dark terminal background
 YORU_BAR = "#141719"      # Window header bar
 YORU_BORDER = "#232628"   # Subtle terminal border
@@ -18,6 +19,13 @@ YORU_GREEN = "#81c19b"    # Emerald green numbers & accents
 YORU_YELLOW = "#de8f78"   # Peach / yellow numbers & prompt
 YORU_RED = "#df5b61"      # Red prompt username
 
+YORU_BG_RGB = (12, 14, 15, 255)
+YORU_MUTED_RGB = (122, 130, 136, 255)
+YORU_CYAN_RGB = (112, 184, 202, 255)
+YORU_GREEN_RGB = (129, 193, 155, 255)
+YORU_YELLOW_RGB = (222, 143, 120, 255)
+YORU_DIVIDER_RGB = (30, 33, 35, 255)
+
 # Yoru-themed heatmap levels (seamless dark forest to emerald green)
 YORU_HEATMAP = [
     "#202325",  # 0 contributions (Subtle visible dark slate cell)
@@ -26,6 +34,15 @@ YORU_HEATMAP = [
     "#448e65",  # Level 3 (6-8)
     "#78b892",  # Level 4 (9-11)
     "#81c19b",  # Level 5 (12+)
+]
+
+HEATMAP_COLORS_RGB = [
+    (32, 35, 37, 255),   # Level 0 (empty #202325)
+    (30, 62, 46, 255),   # Level 1 (#1e3e2e)
+    (45, 99, 71, 255),   # Level 2 (#2d6347)
+    (68, 142, 101, 255), # Level 3 (#448e65)
+    (120, 184, 146, 255),# Level 4 (#78b892)
+    (129, 193, 155, 255),# Level 5 (#81c19b)
 ]
 
 def fetch_contribution_data(username="Xskyis", token=None):
@@ -76,10 +93,10 @@ def compute_stats(cal):
     """Compute contribution totals, streaks, best day, and date ranges."""
     if not cal or not cal.get("weeks"):
         return {
-            "total_contributions": 166,
+            "total_contributions": 168,
             "weeks": [],
             "days": [],
-            "current_streak": 1,
+            "current_streak": 2,
             "longest_streak": 4,
             "best_day_count": 13,
             "best_day_date": "Jun 22, 2026",
@@ -154,8 +171,146 @@ def get_fill_color(count, max_count):
     else:
         return YORU_HEATMAP[5]
 
+def get_fill_color_rgb(count, max_count):
+    if count == 0:
+        return HEATMAP_COLORS_RGB[0]
+    if max_count <= 0:
+        return HEATMAP_COLORS_RGB[1]
+    ratio = count / max_count
+    if ratio <= 0.18:
+        return HEATMAP_COLORS_RGB[1]
+    elif ratio <= 0.38:
+        return HEATMAP_COLORS_RGB[2]
+    elif ratio <= 0.60:
+        return HEATMAP_COLORS_RGB[3]
+    elif ratio <= 0.82:
+        return HEATMAP_COLORS_RGB[4]
+    else:
+        return HEATMAP_COLORS_RGB[5]
+
+def render_contribution_strip(stats, output_path="assets/contrib_graph.png"):
+    """Render the contribution heatmap strip to PNG for direct pasting inside gifos."""
+    weeks = stats.get("weeks", [])
+    max_count = stats.get("best_day_count", 1)
+
+    width = 696
+    height = 175
+    im = Image.new("RGBA", (width, height), YORU_BG_RGB)
+    draw = ImageDraw.Draw(im)
+
+    font_path = "./fonts/JetBrainsMono-Bold.ttf"
+    try:
+        font_sm = ImageFont.truetype(font_path, 10)
+        font_xs = ImageFont.truetype(font_path, 9)
+        font_md = ImageFont.truetype(font_path, 11)
+    except Exception:
+        font_sm = ImageFont.load_default()
+        font_xs = font_sm
+        font_md = font_sm
+
+    start_x = 34
+    start_y = 22
+    cell_size = 9.5
+    step = 12.0
+    rx = 2
+
+    # 1. Month Labels
+    col_months = []
+    for week in weeks:
+        day = week["contributionDays"][min(3, len(week["contributionDays"]) - 1)]
+        dt = datetime.strptime(day["date"], "%Y-%m-%d")
+        col_months.append(dt.strftime("%b"))
+
+    last_label_col = -10
+    for col_idx in range(len(col_months)):
+        m = col_months[col_idx]
+        prev_m = col_months[col_idx - 1] if col_idx > 0 else None
+        if m != prev_m:
+            month_len = 0
+            for future_col in range(col_idx, len(col_months)):
+                if col_months[future_col] == m:
+                    month_len += 1
+                else:
+                    break
+            if col_idx == 0 and month_len < 3:
+                continue
+            if (col_idx - last_label_col) >= 3:
+                mx = start_x + col_idx * step
+                draw.text((mx, 4), m, fill=YORU_CYAN_RGB, font=font_sm)
+                last_label_col = col_idx
+
+    # 2. Weekday Labels
+    draw.text((8, start_y + 1 * step - 2), "Mon", fill=YORU_MUTED_RGB, font=font_xs)
+    draw.text((8, start_y + 3 * step - 2), "Wed", fill=YORU_MUTED_RGB, font=font_xs)
+    draw.text((8, start_y + 5 * step - 2), "Fri", fill=YORU_MUTED_RGB, font=font_xs)
+
+    # 3. Cells
+    for col_idx, week in enumerate(weeks):
+        for day in week["contributionDays"]:
+            weekday = day["weekday"]
+            cx = start_x + col_idx * step
+            cy = start_y + weekday * step
+            count = day["contributionCount"]
+            color = get_fill_color_rgb(count, max_count)
+            draw.rounded_rectangle([cx, cy, cx + cell_size, cy + cell_size], radius=rx, fill=color)
+
+    # 4. Legend
+    legend_y = start_y + 7 * step + 5
+    draw.text((530, legend_y - 2), "Less", fill=YORU_MUTED_RGB, font=font_sm)
+    for i, c in enumerate(HEATMAP_COLORS_RGB):
+        lx = 562 + i * 12
+        draw.rounded_rectangle([lx, legend_y - 1, lx + cell_size, legend_y - 1 + cell_size], radius=rx, fill=c)
+    draw.text((638, legend_y - 2), "More", fill=YORU_MUTED_RGB, font=font_sm)
+
+    # 5. Divider Line
+    line_y = legend_y + 18
+    draw.line([(8, line_y), (width - 8, line_y)], fill=YORU_DIVIDER_RGB, width=1)
+
+    # 6. Summary Rows
+    total_c = stats["total_contributions"]
+    curr_strk = stats["current_streak"]
+    lng_strk = stats["longest_streak"]
+    best_c = stats["best_day_count"]
+    best_d = stats["best_day_date"]
+    start_d = stats["start_date_str"]
+    end_d = stats["end_date_str"]
+
+    row1_y = line_y + 6
+    draw.text((8, row1_y), f"{total_c}", fill=YORU_GREEN_RGB, font=font_md)
+    t_w = draw.textlength(f"{total_c} ", font=font_md)
+    draw.text((8 + t_w, row1_y), "contributions in the last year", fill=YORU_MUTED_RGB, font=font_md)
+    range_str = f"{start_d} -> {end_d}"
+    range_w = draw.textlength(range_str, font=font_md)
+    draw.text((width - 8 - range_w, row1_y), range_str, fill=YORU_CYAN_RGB, font=font_md)
+
+    row2_y = row1_y + 16
+    draw.text((8, row2_y), "current streak ", fill=YORU_MUTED_RGB, font=font_md)
+    w1 = draw.textlength("current streak ", font=font_md)
+    draw.text((8 + w1, row2_y), f"{curr_strk} days", fill=YORU_YELLOW_RGB, font=font_md)
+    w2 = draw.textlength(f"{curr_strk} days", font=font_md)
+    draw.text((8 + w1 + w2, row2_y), "  \u00b7  longest ", fill=YORU_MUTED_RGB, font=font_md)
+    w3 = draw.textlength("  \u00b7  longest ", font=font_md)
+    draw.text((8 + w1 + w2 + w3, row2_y), f"{lng_strk} days", fill=YORU_YELLOW_RGB, font=font_md)
+
+    best_str_prefix = "best day "
+    best_val = f"{best_c}"
+    best_suffix = f" on {best_d}"
+    bw1 = draw.textlength(best_str_prefix, font=font_md)
+    bw2 = draw.textlength(best_val, font=font_md)
+    bw3 = draw.textlength(best_suffix, font=font_md)
+    total_bw = bw1 + bw2 + bw3
+    bx = width - 8 - total_bw
+    draw.text((bx, row2_y), best_str_prefix, fill=YORU_MUTED_RGB, font=font_md)
+    draw.text((bx + bw1, row2_y), best_val, fill=YORU_YELLOW_RGB, font=font_md)
+    draw.text((bx + bw1 + bw2, row2_y), best_suffix, fill=YORU_MUTED_RGB, font=font_md)
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    im.save(output_path)
+    print(f"INFO: Rendered {output_path} ({im.size}) for gifos integration")
+    return im
+
 def generate_svg_content(username, stats):
-    """Generate SVG markup for the Contribution Highlight terminal window widget in Yoru theme."""
+    """Generate SVG markup for Contribution Highlight terminal card without Apple buttons."""
     weeks = stats.get("weeks", [])
     max_count = stats.get("best_day_count", 1)
 
@@ -167,7 +322,6 @@ def generate_svg_content(username, stats):
     step = 12.0
     rx = 2.5
 
-    # Month labels calculation - skip very short initial partial month so it matches reference
     col_months = []
     for week in weeks:
         day = week["contributionDays"][min(3, len(week["contributionDays"]) - 1)]
@@ -193,11 +347,10 @@ def generate_svg_content(username, stats):
                 month_labels.append((col_x, m))
                 last_label_col = col_idx
 
-    # Cells generation
     cells_xml = []
     for col_idx, week in enumerate(weeks):
         for day in week["contributionDays"]:
-            weekday = day["weekday"]  # 0=Sunday, 1=Monday, ..., 6=Saturday
+            weekday = day["weekday"]
             c_x = start_x + col_idx * step
             c_y = start_y + weekday * step
             count = day["contributionCount"]
@@ -219,6 +372,7 @@ def generate_svg_content(username, stats):
     best_count = stats["best_day_count"]
     best_date = stats["best_day_date"]
 
+    # Clean terminal header without Apple traffic light buttons
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
 <style>
 @keyframes cell-anim {{ 0% {{ opacity: 0.3; transform: translateY(-4px); }} 100% {{ opacity: 1; transform: translateY(0); }} }}
@@ -233,13 +387,8 @@ def generate_svg_content(username, stats):
 <path d="M 0.5 10.5 A 10 10 0 0 1 10.5 0.5 L {width - 10.5} 0.5 A 10 10 0 0 1 {width - 0.5} 10.5 L {width - 0.5} 32 L 0.5 32 Z" fill="{YORU_BAR}"/>
 <line x1="0" y1="32" x2="{width}" y2="32" stroke="{YORU_BORDER}" stroke-width="1"/>
 
-<!-- Window Controls (Yoru Red, Yellow, Green) -->
-<circle cx="22" cy="16" r="5" fill="{YORU_RED}"/>
-<circle cx="38" cy="16" r="5" fill="{YORU_YELLOW}"/>
-<circle cx="54" cy="16" r="5" fill="{YORU_GREEN}"/>
-
-<!-- Terminal Title Prompt matching THUNDRA_OS -->
-<text x="{width / 2:.0f}" y="20" font-size="12" font-weight="600" text-anchor="middle">
+<!-- Clean Linux Terminal Prompt Header (No Apple Buttons) -->
+<text x="24" y="20" font-size="12" font-weight="600">
   <tspan fill="{YORU_RED}">nabilfgrza</tspan><tspan fill="{YORU_MUTED}">@</tspan><tspan fill="{YORU_YELLOW}">thundra-os</tspan><tspan fill="{YORU_CYAN}">: </tspan><tspan fill="{YORU_GREEN}">~/contributions</tspan><tspan fill="{YORU_FG}"> --graph</tspan>
 </text>
 
@@ -277,18 +426,27 @@ def generate_svg_content(username, stats):
 </svg>"""
     return svg
 
-def generate_and_save_svg(username="Xskyis", token=None, output_path="assets/contributions.svg"):
-    """Fetch data, compute stats, and save the SVG card in Yoru theme."""
+def generate_and_save_all(username="Xskyis", token=None):
+    """Fetch data, compute stats, and save both contrib_graph.png and contributions.svg."""
     print(f"INFO: Fetching contribution calendar for {username}...")
     cal = fetch_contribution_data(username=username, token=token)
     stats = compute_stats(cal)
-    svg_content = generate_svg_content(username, stats)
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
+    # 1. Render PNG strip for gifos terminal
+    render_contribution_strip(stats, output_path="assets/contrib_graph.png")
+
+    # 2. Render clean SVG (no Apple buttons)
+    svg_content = generate_svg_content(username, stats)
+    os.makedirs("assets", exist_ok=True)
+    with open("assets/contributions.svg", "w", encoding="utf-8") as f:
         f.write(svg_content)
-    print(f"INFO: Successfully generated {output_path} ({os.path.getsize(output_path)} bytes) in Yoru theme!")
+    print("INFO: Successfully saved assets/contributions.svg (pure Linux terminal style, no Apple buttons)!")
+
     return stats
 
+# Compatibility helper
+def generate_and_save_svg(username="Xskyis", token=None, output_path="assets/contributions.svg"):
+    return generate_and_save_all(username=username, token=token)
+
 if __name__ == "__main__":
-    generate_and_save_svg()
+    generate_and_save_all()

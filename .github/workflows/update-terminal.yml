@@ -48,7 +48,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore(gifos): auto-refresh terminal readme [skip ci]"
-          file_pattern: 'README.md output.gif assets/contributions.svg'
+          file_pattern: 'README.md output.gif assets/contrib_graph.png assets/contributions.svg'
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'

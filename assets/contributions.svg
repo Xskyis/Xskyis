@@ -12,13 +12,8 @@
 <path d="M 0.5 10.5 A 10 10 0 0 1 10.5 0.5 L 739.5 0.5 A 10 10 0 0 1 749.5 10.5 L 749.5 32 L 0.5 32 Z" fill="#141719"/>
 <line x1="0" y1="32" x2="750" y2="32" stroke="#232628" stroke-width="1"/>
 
-<!-- Window Controls (Yoru Red, Yellow, Green) -->
-<circle cx="22" cy="16" r="5" fill="#df5b61"/>
-<circle cx="38" cy="16" r="5" fill="#de8f78"/>
-<circle cx="54" cy="16" r="5" fill="#81c19b"/>
-
-<!-- Terminal Title Prompt matching THUNDRA_OS -->
-<text x="375" y="20" font-size="12" font-weight="600" text-anchor="middle">
+<!-- Clean Linux Terminal Prompt Header (No Apple Buttons) -->
+<text x="24" y="20" font-size="12" font-weight="600">
   <tspan fill="#df5b61">nabilfgrza</tspan><tspan fill="#7a8288">@</tspan><tspan fill="#de8f78">thundra-os</tspan><tspan fill="#70b8ca">: </tspan><tspan fill="#81c19b">~/contributions</tspan><tspan fill="#edeff0"> --graph</tspan>
 </text>
 
@@ -406,7 +401,7 @@
 <rect class="c-cell" style="animation-delay:0.976s" x="688.00" y="100.00" width="9.80" height="9.80" rx="2.5" fill="#202325"><title>2026-10-22: 0 contributions</title></rect>
 <rect class="c-cell" style="animation-delay:1.016s" x="688.00" y="112.00" width="9.80" height="9.80" rx="2.5" fill="#202325"><title>2026-10-23: 0 contributions</title></rect>
 <rect class="c-cell" style="animation-delay:1.056s" x="688.00" y="124.00" width="9.80" height="9.80" rx="2.5" fill="#1e3e2e"><title>2026-10-24: 2 contributions</title></rect>
-<rect class="c-cell" style="animation-delay:0.832s" x="700.00" y="52.00" width="9.80" height="9.80" rx="2.5" fill="#202325"><title>2026-10-25: 0 contributions</title></rect>
+<rect class="c-cell" style="animation-delay:0.832s" x="700.00" y="52.00" width="9.80" height="9.80" rx="2.5" fill="#1e3e2e"><title>2026-10-25: 2 contributions</title></rect>
 
 <!-- Legend -->
 <text x="618" y="149" fill="#7a8288" font-size="10" text-anchor="end">Less</text>
@@ -422,10 +417,10 @@
 <line x1="16" y1="165" x2="734" y2="165" stroke="#1e2123" stroke-width="1"/>
 
 <!-- Summary Bottom Row 1 -->
-<text x="24" y="189" font-size="13"><tspan fill="#81c19b" font-weight="700">166</tspan><tspan fill="#7a8288"> contributions in the last year</tspan></text>
+<text x="24" y="189" font-size="13"><tspan fill="#81c19b" font-weight="700">168</tspan><tspan fill="#7a8288"> contributions in the last year</tspan></text>
 <text x="726" y="189" font-size="12" fill="#70b8ca" text-anchor="end">Oct 26, 2025 &#8594; Oct 25, 2026</text>
 
 <!-- Summary Bottom Row 2 -->
-<text x="24" y="213" font-size="13" fill="#7a8288">current streak <tspan fill="#de8f78" font-weight="700">1 days</tspan><tspan fill="#7a8288">   &#183;   longest </tspan><tspan fill="#de8f78" font-weight="700">4 days</tspan></text>
+<text x="24" y="213" font-size="13" fill="#7a8288">current streak <tspan fill="#de8f78" font-weight="700">2 days</tspan><tspan fill="#7a8288">   &#183;   longest </tspan><tspan fill="#de8f78" font-weight="700">4 days</tspan></text>
 <text x="726" y="213" font-size="12" fill="#7a8288" text-anchor="end">best day <tspan fill="#de8f78" font-weight="700">13</tspan> on Jun 22, 2026</text>
 </svg>

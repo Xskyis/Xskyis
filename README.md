@@ -1,5 +1,4 @@
 <div align="center">
-  <!-- THUNDRA_OS Terminal Animation -->
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./output.gif">
     <source media="(prefers-color-scheme: light)" srcset="./output.gif">

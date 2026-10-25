@@ -51,7 +51,7 @@ def main():
     print("INFO: Initializing gifos terminal...")
     t = gifos.Terminal(
         width=750,
-        height=500,
+        height=650,
         xpad=15,
         ypad=15,
         font_file=FONT_FILE_BITMAP,
@@ -65,18 +65,18 @@ def main():
     token = os.getenv("GITHUB_TOKEN")
     rating = "A+"
 
-    # 1. Fetch live contribution calendar and generate Contribution Highlight SVG card
+    # 1. Fetch live contribution calendar and render both contrib_graph.png and contributions.svg
     try:
-        contrib_stats = generate_and_save_svg(
+        from scripts.generate_contribution_highlight import generate_and_save_all
+        contrib_stats = generate_and_save_all(
             username=github_username,
             token=token,
-            output_path="assets/contributions.svg",
         )
     except Exception as e:
         print(f"WARNING: Could not generate contribution highlight: {e}")
         contrib_stats = {
-            "total_contributions": 164,
-            "current_streak": 0,
+            "total_contributions": 168,
+            "current_streak": 2,
             "longest_streak": 4,
             "best_day_count": 13,
             "best_day_date": "Jun 22, 2026",
@@ -142,14 +142,6 @@ def main():
     t.clear_frame()
     t.toggle_show_cursor(False)
 
-    total_c = contrib_stats.get("total_contributions", 164)
-    curr_strk = contrib_stats.get("current_streak", 0)
-    lng_strk = contrib_stats.get("longest_streak", 4)
-    best_c = contrib_stats.get("best_day_count", 13)
-    best_d = contrib_stats.get("best_day_date", "Jun 22, 2026")
-    start_d = contrib_stats.get("start_date_short", "Oct 19, 2025")
-    end_d = contrib_stats.get("end_date_short", "Oct 24, 2026")
-
     user_details_lines = f"""\x1b[30;101mnabilfgrza@GitHub\x1b[0m
 --------------
 \x1b[96mOS:     \x1b[93mCachyOS, Atlas OS\x1b[0m
@@ -164,15 +156,6 @@ def main():
 \x1b[96mLinkedIn: \x1b[93mnabilfgrza\x1b[0m
 \x1b[96mGitHub:   \x1b[93mXskyis\x1b[0m
 
-\x1b[30;101mContribution Highlight:\x1b[0m
------------------------
-\x1b[96mContributions:  \x1b[92m{total_c} in last year\x1b[0m
-\x1b[96mCurrent Streak: \x1b[93m{curr_strk} days\x1b[0m
-\x1b[96mLongest Streak: \x1b[93m{lng_strk} days\x1b[0m
-\x1b[96mBest Day:       \x1b[93m{best_c} on {best_d}\x1b[0m
-\x1b[96mTracked Range:  \x1b[93m{start_d} -> {end_d}\x1b[0m
-\x1b[96mUser Rank:      \x1b[92m{rating}\x1b[0m
-
 \x1b[40m   \x1b[41m   \x1b[42m   \x1b[43m   \x1b[44m   \x1b[45m   \x1b[46m   \x1b[47m   \x1b[0m"""
 
     # Top Prompt line after running
@@ -183,10 +166,20 @@ def main():
     t.paste_image("./assets/cat_clean.png", 3, 2, 0.85)
 
     # Print user details on the right
-    t.gen_text(user_details_lines, 3, 28, count=5, contin=True)
+    t.gen_text(user_details_lines, 3, 28, count=3, contin=True)
 
-    # 5. Footer Command Prompt
-    footer_row = 25
+    # 5. Prompt & Typing contributions --graph
+    t.gen_prompt(19, count=2)
+    t.toggle_show_cursor(True)
+    t.gen_typing_text("\x1b[92mcontributions\x1b[0m --graph", 19, contin=True)
+    t.clone_frame(2)
+    t.toggle_show_cursor(False)
+
+    # Paste Contribution Heatmap Strip
+    t.paste_image("./assets/contrib_graph.png", 20, 1, 1)
+
+    # 6. Footer Command Prompt
+    footer_row = 31
     t.gen_prompt(footer_row)
     t.toggle_show_cursor(True)
     t.gen_typing_text("\x1b[92m# Thanks for visiting! :D\x1b[0m", footer_row, contin=True)
@@ -194,7 +187,7 @@ def main():
     # Hold the final screen for 45 frames (~20 seconds)
     t.clone_frame(1200)
 
-    # 6. Generate GIF
+    # 7. Generate GIF
     try:
         t.gen_gif()
     except Exception as e:
@@ -203,28 +196,18 @@ def main():
     if not os.path.exists("output.gif") or os.path.getsize("output.gif") == 0:
         fallback_gen_gif(fps=15, output_name="output.gif")
 
-    # 7. Write README.md with terminal GIF and Contribution Highlight card
+    # 8. Write single unified README.md
     readme_content = f"""<div align="center">
-  <!-- THUNDRA_OS Terminal Animation -->
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./output.gif">
     <source media="(prefers-color-scheme: light)" srcset="./output.gif">
     <img alt="THUNDRA_OS" src="output.gif" width="750">
   </picture>
-
-  <br /><br />
-
-  <!-- Contribution Highlight Terminal Card -->
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/contributions.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./assets/contributions.svg">
-    <img alt="Contribution Highlight" src="assets/contributions.svg" width="750">
-  </picture>
 </div>
 """
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
-    print("INFO: Updated README.md (with THUNDRA_OS and Contribution Highlight card)!")
+    print("INFO: Updated README.md (single unified THUNDRA_OS gif)!")
 
 if __name__ == "__main__":
     main()
