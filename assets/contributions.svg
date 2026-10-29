@@ -405,6 +405,7 @@
 <rect class="c-cell" style="animation-delay:0.872s" x="700.00" y="64.00" width="9.80" height="9.80" rx="2.5" fill="#81c19b"><title>2026-10-26: 18 contributions</title></rect>
 <rect class="c-cell" style="animation-delay:0.912s" x="700.00" y="76.00" width="9.80" height="9.80" rx="2.5" fill="#202325"><title>2026-10-27: 0 contributions</title></rect>
 <rect class="c-cell" style="animation-delay:0.952s" x="700.00" y="88.00" width="9.80" height="9.80" rx="2.5" fill="#202325"><title>2026-10-28: 0 contributions</title></rect>
+<rect class="c-cell" style="animation-delay:0.992s" x="700.00" y="100.00" width="9.80" height="9.80" rx="2.5" fill="#202325"><title>2026-10-29: 0 contributions</title></rect>
 
 <!-- Legend -->
 <text x="618" y="149" fill="#7a8288" font-size="10" text-anchor="end">Less</text>
@@ -421,7 +422,7 @@
 
 <!-- Summary Bottom Row 1 -->
 <text x="24" y="189" font-size="13"><tspan fill="#81c19b" font-weight="700">205</tspan><tspan fill="#7a8288"> contributions in the last year</tspan></text>
-<text x="726" y="189" font-size="12" fill="#70b8ca" text-anchor="end">Oct 26, 2025 &#8594; Oct 28, 2026</text>
+<text x="726" y="189" font-size="12" fill="#70b8ca" text-anchor="end">Oct 26, 2025 &#8594; Oct 29, 2026</text>
 
 <!-- Summary Bottom Row 2 -->
 <text x="24" y="213" font-size="13" fill="#7a8288">current streak <tspan fill="#de8f78" font-weight="700">0 days</tspan><tspan fill="#7a8288">   &#183;   longest </tspan><tspan fill="#de8f78" font-weight="700">4 days</tspan></text>
